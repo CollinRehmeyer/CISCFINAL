@@ -65,12 +65,12 @@ public class RetirementController implements Initializable {
 		// "\\d*?" - means any decimal number
 		// "\\d*(\\.\\d*)?" means any decimal, then optionally a period (.), then
 		// decmial
-		hmTextFieldRegEx.put(txtYearsToWork, "\\d*?");
-		hmTextFieldRegEx.put(txtAnnualReturnWorking, "\\d*(\\.\\d*)?");
-		hmTextFieldRegEx.put(txtAnnualReturnRetired, "\\d*(\\.\\d*)?");
-		hmTextFieldRegEx.put(txtYearsRetired, "\\d*?");
-		hmTextFieldRegEx.put(txtRequiredIncome, "\\d*?");
-		hmTextFieldRegEx.put(txtMonthlySSI, "\\d*?");
+		hmTextFieldRegEx.put(txtYearsToWork, "(([123]?\\d)|(40))");
+		hmTextFieldRegEx.put(txtAnnualReturnWorking, "0(.(1|0(\\d)+)))?");
+		hmTextFieldRegEx.put(txtAnnualReturnRetired, "0(.(1|0(\\d)+)))?");
+		hmTextFieldRegEx.put(txtYearsRetired, "(([1]?\\d)|(20))");
+		hmTextFieldRegEx.put(txtRequiredIncome, "(264[23456789])|(26[56789]\\d)|(2[789]\\d\\d)|([3456789]\\d\\d\\d)|(10000)");
+		hmTextFieldRegEx.put(txtMonthlySSI, "(2[012345]\\d\\d)|(26[0123]\\d)|(264[012])|([01]?\\d?\\d?\\d)");
 		
 
 		// Check out these pages (how to validate controls):
@@ -136,9 +136,21 @@ public class RetirementController implements Initializable {
 
 		txtSaveEachMonth.setDisable(false);
 		txtWhatYouNeedToSave.setDisable(false);
+		
+		int yearsToWork = Integer.parseInt(txtYearsToWork.getText());
+		int yearsRetired = Integer.parseInt(txtYearsRetired.getText());
+		double annualReturnWorking = Double.parseDouble(txtAnnualReturnWorking.getText());
+		double annualReturnRetired = Double.parseDouble(txtAnnualReturnRetired.getText());
+		double monthlySSI = Double.parseDouble(txtMonthlySSI.getText());
+		double requiredIncome = Double.parseDouble(txtRequiredIncome.getText());
+		
+		Retirement ret = new Retirement(yearsToWork, annualReturnWorking, yearsRetired, 
+				annualReturnRetired, requiredIncome, monthlySSI);
 
-		// TODO: Calculate txtWhatYouNeedToSave value...
-		// TODO: Then calculate txtSaveEachMonth, using amount from txtWhatYouNeedToSave
-		// as input
+			double toSave = ret.TotalAmountToSave();
+			txtWhatYouNeedToSave.setText("" + toSave);
+		
+			double toSaveEachMonth = ret.MonthlySavings();
+			txtSaveEachMonth.setText("" + toSaveEachMonth);
 	}
 }

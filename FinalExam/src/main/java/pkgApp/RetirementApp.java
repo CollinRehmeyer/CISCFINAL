@@ -28,6 +28,8 @@ public class RetirementApp extends Application {
 			BorderPane ClientServerOverview = (BorderPane) loader.load();
 			Scene scene = new Scene(ClientServerOverview);			
 			primaryStage.setScene(scene);
+			scene.getStylesheets().add("application.css");
+			
 			// Give the controller access to the main app.
 			RetirementController controller = loader.getController();			
 			controller.setMainApp(this);			
